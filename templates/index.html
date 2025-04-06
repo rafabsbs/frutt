@@ -11,44 +11,39 @@
             <div class="swiper-wrapper">
                 {% for produto in destaques %}
                 <div class="swiper-slide">
-                    <div class="card card-produto h-100 mx-2">
-                        <!-- Botão de Editar (Admin) -->
-                        {% if 'usuario_id' in session and session['usuario_id'] == 1 %}
-                        <a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn-editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% endif %}
-
-                        <!-- Badge de Promoção -->
+                    <div class="card card-fruta h-100 mx-2">
                         {% if produto.preco < 5 %}
-                        <span class="badge-promocao">PROMOÇÃO</span>
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">PROMOÇÃO</span>
                         {% endif %}
-
-                        <!-- Imagem do Produto -->
-                        <a href="{{ url_for('produto', id=produto.id) }}" class="produto-imagem-link">
-                            <img src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" 
-                                 class="produto-imagem" 
-                                 alt="{{ produto.nome }}">
-                        </a>
-
-                        <!-- Corpo do Card -->
+                        <a href="{{ url_for('produto', id=produto.id) }}"><img src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" 
+                             class="card-img-top" 
+                             alt="{{ produto.nome }}"
+                             style="height: 200px; object-fit: cover;"></a>
                         <div class="card-body">
-                            <h5 class="produto-nome">{{ produto.nome }}</h5>
-                            <p class="produto-preco">R$ {{ "%.2f"|format(produto.preco) }}</p>
-                            <p class="produto-descricao">{{ produto.descricao[:60] }}...</p>
+                            <h5 class="card-title">{{ produto.nome }}</h5>
+                            <p class="card-text text-success fw-bold">R$ {{ "%.2f"|format(produto.preco) }}</p>
+                            <p class="card-text text-muted small">{{ produto.descricao[:60] }}...</p>
                         </div>
-
-                        <!-- Footer do Card -->
-                        <div class="card-footer">
-                            <div class="acoes-produto">
-                                <a href="{{ url_for('produto', id=produto.id) }}" class="btn-detalhes">Detalhes</a>
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('produto', id=produto.id) }}" 
+                                   class="btn btn-sm btn-outline-success">Detalhes</a>
+                                {% if 'usuario_id' in session and session['usuario_id'] == 1 %}
+                                <a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn-editar">
+                                <i class="fas fa-edit"></i>
+                                </a>
+                        {% endif %}
                                 <form action="{{ url_for('adicionar_carrinho', produto_id=produto.id) }}" method="post">
                                     <input type="hidden" name="quantidade" value="1">
-                                    <button type="submit" class="btn-carrinho" {% if produto.estoque <= 0 %}disabled{% endif %}>
+                                    <button type="submit" class="btn btn-sm btn-success" 
+                                            {% if produto.estoque <= 0 %}disabled{% endif %}>
                                         <i class="fas fa-cart-plus"></i>
                                     </button>
                                 </form>
                             </div>
+                        </div>
+                        <div>
+                            
                         </div>
                     </div>
                 </div>
@@ -62,9 +57,100 @@
             <!-- Paginação -->
             <div class="swiper-pagination"></div>
         </div>
+        
     </div>
 </section>
-
-<!-- Script do Swiper (opcional, se não estiver no base.html) -->
+<style>
+    .swiper-container {
+        padding: 20px 0;
+    }
+    
+    .swiper-slide {
+        height: auto; /* Ajusta a altura automaticamente */
+    }
+    
+    .card-fruta {
+        transition: transform 0.3s;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-fruta:hover {
+        transform: translateY(-5px);
+    }
+    
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #28a745; /* Cor verde para combinar com o tema */
+        background-color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+        font-size: 1.2rem;
+    }
+    
+    .swiper-pagination-bullet-active {
+        background-color: #b60000;
+    }
+    
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const swiper = new Swiper('.swiper-container', {
+            // Configurações do carrossel
+            slidesPerView: 1,  // Mostra 1 slide por vez em mobile
+            spaceBetween: 20,
+            loop: true,  // Cria um loop infinito
+            autoplay: {
+                delay: 5000,  // Passa automaticamente a cada 5 segundos
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                // Quando a largura da tela é >= 576px
+                576: {
+                    slidesPerView: 2,
+                },
+                // Quando a largura da tela é >= 768px
+                768: {
+                    slidesPerView: 3,
+                },
+                // Quando a largura da tela é >= 992px
+                992: {
+                    slidesPerView: 4,
+                }
+            },
+            effect: 'coverflow',
+                coverflowEffect: {
+                rotate: 30,
+                slideShadows: false,
+                depth: 100,
+                modifier: 1,
+                stretch: 0,
+                slidesPerView: 'auto',
+                centeredSlides: true,
+                preloadImages: false,
+                lazy: true,
+                simulateTouch: true,
+                grabCursor: true,
+                effect: 'slide' // ou 'fade', 'cube', 'flip'
+},
+        });
+    });
+         
+</script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 {% endblock %}
