@@ -1,53 +1,52 @@
 {% extends "base.html" %}
 
-{% block title %}Editar {{ produto.nome }}{% endblock %}
-
 {% block content %}
-<div class="admin-form">
-    <h1>Editar Produto: {{ produto.nome }}</h1>
+<div class="editar-produto-container">
+    <h1 class="editar-titulo">Editar Produto</h1>
     
-    <div class="current-image">
-        <h3>Imagem Atual:</h3>
-        <img src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" alt="{{ produto.nome }}" style="max-width: 200px;">
-    </div>
-    
-    <form action="{{ url_for('editar_produto', id=produto.id) }}" method="post" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" class="editar-formulario">
+        {{ form.hidden_tag() }}
+        
+        <!-- Campo Nome -->
         <div class="form-group">
-            <label for="nome">Nome do Produto:</label>
-            <input type="text" id="nome" name="nome" value="{{ produto.nome }}" required>
-        </div>
-        <div class="form-group">
-            <label for="preco">Preço (R$):</label>
-            <input type="number" id="preco" name="preco" step="0.01" min="0" value="{{ produto.preco }}" required>
-        </div>
-        <div class="form-group">
-            <label for="estoque">Quantidade em Estoque:</label>
-            <input type="number" id="estoque" name="estoque" min="0" value="{{ produto.estoque }}" required>
-        </div>
-        <div class="form-group">
-            <label for="descricao">Descrição:</label>
-            <textarea id="descricao" name="descricao" rows="4" required>{{ produto.descricao }}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="imagem">Nova Imagem do Produto (opcional):</label>
-            <input type="file" id="imagem" name="imagem" accept="image/*">
+            {{ form.nome.label(class="form-label") }}
+            {{ form.nome(class="form-input", value=produto.nome) }}
         </div>
         
-        <div class="form-actions">
-            <button type="submit" class="btn-submit">Salvar Alterações</button>
-            <a href="{{ url_for('produto', id=produto.id) }}" class="btn-cancel">Cancelar</a>
-            <button type="button" onclick="confirmarExclusao()" class="btn-delete">Excluir Produto</button>
+        <!-- Campo Preço -->
+        <div class="form-group">
+            {{ form.preco.label(class="form-label") }}
+            {{ form.preco(class="form-input", value=produto.preco) }}
+        </div>
+        
+        <!-- Campo Estoque -->
+        <div class="form-group">
+            {{ form.estoque.label(class="form-label") }}
+            {{ form.estoque(class="form-input", value=produto.estoque) }}
+        </div>
+        
+        <!-- Campo Descrição -->
+        <div class="form-group">
+            {{ form.descricao.label(class="form-label") }}
+            {{ form.descricao(class="form-textarea", rows=4) }}{{ produto.descricao }}</textarea>
+        </div>
+        
+        <!-- Campo Imagem (Atual + Nova) -->
+        <div class="form-group">
+            <label class="form-label">Imagem Atual:</label>
+            <img src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" 
+                 class="imagem-atual" 
+                 alt="{{ produto.nome }}">
+            
+            {{ form.nova_imagem.label(class="form-label") }}
+            {{ form.nova_imagem(class="form-input-file") }}
+        </div>
+        
+        <!-- Botões -->
+        <div class="form-botoes">
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
+            <a href="{{ url_for('admin') }}" class="btn-cancelar">Cancelar</a>
         </div>
     </form>
-    
-    <form id="delete-form" action="{{ url_for('excluir_produto', id=produto.id) }}" method="post" style="display: none;"></form>
 </div>
-
-<script>
-function confirmarExclusao() {
-    if (confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')) {
-        document.getElementById('delete-form').submit();
-    }
-}
-</script>
 {% endblock %}

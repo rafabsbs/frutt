@@ -439,3 +439,121 @@ small {
     transform: translateY(-2px);
 }
 
+/* Container Principal */
+.editar-produto-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.editar-titulo {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+/* Formulário */
+.editar-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Grupos de Campos */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #34495e;
+}
+
+/* Inputs */
+.form-input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.form-input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.form-textarea {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Imagem Atual */
+.imagem-atual {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    border: 1px dashed #ccc;
+}
+
+/* Botões */
+.form-botoes {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-salvar {
+    background: #27ae60;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-salvar:hover {
+    background: #2ecc71;
+}
+
+.btn-cancelar {
+    background: #e74c3c;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.3s;
+}
+
+.btn-cancelar:hover {
+    background: #c0392b;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .editar-produto-container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+    
+    .form-botoes {
+        flex-direction: column;
+    }
+}
