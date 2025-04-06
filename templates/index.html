@@ -29,9 +29,9 @@
                                 <a href="{{ url_for('produto', id=produto.id) }}" 
                                    class="btn btn-sm btn-outline-success">Detalhes</a>
                                 {% if 'usuario_id' in session and session['usuario_id'] == 1 %}
-                                <a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn-editar">
-                                <i class="fas fa-edit">Editar</i>
-                                </a>
+                                <button style="width: 20x; background-color: #b60000;"><a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn-editar">
+                                    <i class="fas fa-edit">Editar</i>
+                                    </a></button>
                         {% endif %}
                                 <form action="{{ url_for('adicionar_carrinho', produto_id=produto.id) }}" method="post">
                                     <input type="hidden" name="quantidade" value="1">
