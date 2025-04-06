@@ -384,7 +384,7 @@ def adicionar_produto():
 
 @app.route('/admin/editar_produto/<int:id>', methods=['GET', 'POST'])
 def editar_produto(id):
-    if 'usuario_id' not in session or session['usuario_id'] != 1:  # Verificação de admin
+    if 'usuario_id' not in session or session['usuario_id'] != 2:  # Verificação de admin
         return redirect(url_for('index'))
     
     produto = Produto.query.get_or_404(id)
