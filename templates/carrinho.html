@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Carrinho de Compras{% endblock %}
+
+{% block content %}
+<h1>Seu Carrinho</h1>
+
+{% if itens %}
+<table class="tabela-carrinho">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Preço Unitário</th>
+            <th>Quantidade</th>
+            <th>Subtotal</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in itens %}
+        <tr>
+            <td>{{ item.produto.nome }}</td>
+            <td>R$ {{ "%.2f"|format(item.produto.preco) }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ "%.2f"|format(item.produto.preco * item.quantidade) }}</td>
+            <td>
+                <a href="{{ url_for('remover_item', item_id=item.id) }}" class="btn-remover">Remover</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="total-label">Total:</td>
+            <td colspan="2" class="total-value">R$ {{ "%.2f"|format(total) }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="acoes-carrinho">
+    <a href="{{ url_for('index') }}" class="btn-continuar">Continuar Comprando</a>
+    <a href="{{ url_for('finalizar_compra') }}" class="btn-finalizar">Finalizar Compra</a>
+</div>
+{% else %}
+<div class="carrinho-vazio">
+    <p>Seu carrinho está vazio.</p>
+    <a href="{{ url_for('index') }}" class="btn-voltar">Voltar às compras</a>
+</div>
+{% endif %}
+{% endblock %}

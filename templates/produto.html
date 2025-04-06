@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ produto.nome }}{% endblock %}
+
+{% block content %}
+<div class="produto-detalhe">
+    <div class="produto-imagem">
+        <img style="width:200px; " src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" alt="{{ produto.nome }}">
+    </div>
+    <div style="margin-left: 200px;" class="produto-info">
+        <h2>{{ produto.nome }}</h2>
+        <p class="preco">R$ {{ "%.2f"|format(produto.preco) }}</p>
+        <p class="estoque">Disponível: {{ produto.estoque }} unidades</p>
+        
+        <div class="descricao">
+            <h3>Descrição</h3>
+            <p>{{ produto.descricao }}</p>
+        </div>
+        
+        <form action="{{ url_for('adicionar_carrinho', produto_id=produto.id) }}" method="post">
+            <div class="quantidade">
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" id="quantidade" name="quantidade" value="1" min="1" max="{{ produto.estoque }}">
+            </div>
+            <button type="submit" class="btn-comprar">Adicionar ao Carrinho</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

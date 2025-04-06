@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Compra Finalizada{% endblock %}
+
+{% block content %}
+<div class="confirmacao-compra">
+    <h1>✅ Compra Finalizada!</h1>
+    <div class="icone-confirmacao">📦</div>
+    <p>O administrador já foi notificado sobre seu pedido.</p>
+    <p>Caso precise de ajuda, entre em contato.</p>
+    <a href="{{ url_for('index') }}" class="btn-voltar">Voltar às Compras</a>
+</div>
+{% endblock %}
