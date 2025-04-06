@@ -28,7 +28,7 @@
                             <div class="d-flex justify-content-between">
                                 <a href="{{ url_for('produto', id=produto.id) }}" 
                                    class="btn btn-sm btn-outline-success">Detalhes</a>
-                                {% if 'usuario_id' in session and session['usuario_id'] == 1 %}
+                                {% if 'usuario_id' in session and session['usuario_id'] == 2 %}
                                 <button style="width: 20x; background-color: #b60000;"><a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn-editar">
                                     <i class="fas fa-edit">Editar</i>
                                     </a></button>
