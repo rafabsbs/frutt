@@ -41,7 +41,8 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
     """
     TWILIO_ACCOUNT = os.getenv('TWILIO_ACCOUNT')
     TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-
+    ADMIN_WHATSAPP = os.getenv('ADMIN_WHATSAPP')
+    TWILIO_WHATSAPP_NUMBER = os.getenv('TWILIO_WHATSAPP_NUMBER')
 
     client = Client(TWILIO_ACCOUNT, TWILIO_AUTH_TOKEN )
     
@@ -71,8 +72,8 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
     try:
         message = client.messages.create(
             body=mensagem,
-            from_= ('TWILIO_WHATSAPP_NUMBER'),
-            to= ('ADMIN_WHATSAPP')
+            from_= TWILIO_WHATSAPP_NUMBER,
+            to= ADMIN_WHATSAPP,
         )
         print(f"✅ Notificação enviada! SID: {message.sid}")
         return True
