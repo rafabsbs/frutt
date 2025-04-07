@@ -5,6 +5,7 @@ from twilio.rest import Client
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask_migrate import Migrate
+from datetime import datetime
 import os
 
 # Configurações Twilio (obtenha em twilio.com)
@@ -19,6 +20,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 
 app.secret_key = os.getenv('SECRET_KEY')
 
+TWILIO_ACCOUNT = os.getenv('TWILIO_ACCOUNT')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+ADMIN_WHATSAPP = os.getenv('ADMIN_WHATSAPP')
+TWILIO_WHATSAPP_NUMBER = os.getenv('TWILIO_WHATSAPP_NUMBER')
+
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -30,6 +36,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limite de 16MB
 
+
 def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
     """
     Envia notificação de nova compra para o admin via WhatsApp
@@ -39,12 +46,7 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
         total: Valor total da compra
         pedido_id: ID do pedido
     """
-    TWILIO_ACCOUNT = os.getenv('TWILIO_ACCOUNT')
-    TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-    ADMIN_WHATSAPP = os.getenv('ADMIN_WHATSAPP')
-    TWILIO_WHATSAPP_NUMBER = os.getenv('TWILIO_WHATSAPP_NUMBER')
-
-    client = Client(TWILIO_ACCOUNT, TWILIO_AUTH_TOKEN )
+    client = Client(TWILIO_ACCOUNT, TWILIO_AUTH_TOKEN)
     
     # Formatar itens
     itens_formatados = "\n".join(
@@ -67,13 +69,14 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
 
     💰 *Total:* R${total:.2f}
 
+    ⏱️ *Data/Hora:* {datetime.now().strftime('%d/%m/%Y %H:%M')}
     """
     
     try:
         message = client.messages.create(
             body=mensagem,
-            from_= TWILIO_WHATSAPP_NUMBER,
-            to= ADMIN_WHATSAPP,
+            from_=TWILIO_WHATSAPP_NUMBER,
+            to=ADMIN_WHATSAPP
         )
         print(f"✅ Notificação enviada! SID: {message.sid}")
         return True
