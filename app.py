@@ -462,35 +462,6 @@ def excluir_produto(id):
     
     return redirect(url_for('index'))
 
-@app.route('/debug-usuario')
-def debug_usuario():
-    try:
-        # Testa consulta
-        usuarios = Usuario.query.all()
-        # Testa inserção (remove depois)
-        novo = Usuario(
-            nome="Teste",
-            email="teste@teste.com",
-            senha_hash="teste123",
-            telefone="11999999999"
-        )
-        db.session.add(novo)
-        db.session.commit()
-        return "Operações com usuario OK!"
-    except Exception as e:
-        return f"Erro: {str(e)}", 500
-
-@app.route('/debug-login')
-def debug_login():
-    try:
-        # Testa um usuário existente
-        usuario = Usuario.query.first()
-        if usuario:
-            return f"Usuário teste: {usuario.email} - Senha válida: {usuario.check_senha('senha_test')}"
-        return "Nenhum usuário cadastrado"
-    except Exception as e:
-        return f"Erro: {str(e)}", 500
-
 @app.before_request
 def before_request():
     if 'usuario_id' not in session and request.endpoint not in ['login', 'cadastro', 'static']:
