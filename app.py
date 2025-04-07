@@ -116,7 +116,7 @@ class Produto(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     preco = db.Column(db.Float, nullable=False)
     descricao = db.Column(db.Text)
-    imagem = db.Column(db.String(100))
+    imagem = db.Column(db.String(256))
     estoque = db.Column(db.Integer, default=0)
 
 # Modelo de Carrinho de Compras
@@ -337,54 +337,44 @@ def adicionar_produto():
                 raise ValueError("O estoque não pode ser negativo")
                 
             descricao = request.form['descricao']
+            imagem_url = request.form['imagem_url']  # Novo campo para URL
             
-            # Processamento da imagem
-            if 'imagem' not in request.files:
-                raise ValueError("Nenhum arquivo de imagem enviado")
+            # Validação da URL da imagem
+            if not imagem_url:
+                raise ValueError("A URL da imagem é obrigatória")
                 
-            imagem = request.files['imagem']
+            if not (imagem_url.startswith('http://') or imagem_url.startswith('https://')):
+                raise ValueError("A URL da imagem deve começar com http:// ou https://")
+                
+            # Verificação opcional - se a imagem existe (pode ser lento)
+            # try:
+            #     response = requests.head(imagem_url)
+            #     if response.status_code != 200:
+            #         raise ValueError("A URL da imagem não é acessível")
+            # except requests.RequestException:
+            #     raise ValueError("Não foi possível verificar a URL da imagem")
             
-            # Se o usuário não selecionar arquivo, o navegador pode
-            # enviar um arquivo vazio sem nome
-            if imagem.filename == '':
-                raise ValueError("Nenhuma imagem selecionada")
-                
-            if imagem and allowed_file(imagem.filename):
-                # Garante um nome de arquivo seguro
-                filename = secure_filename(imagem.filename)
-                
-                # Cria um nome único para evitar sobrescrita
-                unique_filename = f"{os.urandom(8).hex()}_{filename}"
-                save_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-                
-                # Garante que o diretório existe
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                
-                # Salva o arquivo
-                imagem.save(save_path)
-                
-                # Criação do produto no banco de dados
-                novo_produto = Produto(
-                    nome=nome,
-                    preco=preco,
-                    descricao=descricao,
-                    imagem=unique_filename,
-                    estoque=estoque
-                )
-                
-                db.session.add(novo_produto)
-                db.session.commit()
-                
-                flash('Produto adicionado com sucesso!', 'success')
-                return redirect(url_for('index'))
-            else:
-                raise ValueError("Tipo de arquivo não permitido. Use apenas PNG, JPG ou GIF")
+            # Criação do produto no banco de dados
+            novo_produto = Produto(
+                nome=nome,
+                preco=preco,
+                descricao=descricao,
+                imagem=imagem_url,  # Agora armazenamos a URL diretamente
+                estoque=estoque
+            )
+            
+            db.session.add(novo_produto)
+            db.session.commit()
+            
+            flash('Produto adicionado com sucesso!', 'success')
+            return redirect(url_for('index'))
                 
         except ValueError as e:
             flash(str(e), 'error')
         except Exception as e:
+            db.session.rollback()
             flash('Ocorreu um erro ao adicionar o produto', 'error')
-            print(f"Erro: {str(e)}")
+            app.logger.error(f"Erro ao adicionar produto: {str(e)}")
     
     return render_template('adicionar_produto.html')
 
