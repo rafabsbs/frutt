@@ -5,7 +5,7 @@
 {% block content %}
 <div class="produto-detalhe">
     <div class="produto-imagem">
-        <img style="width:200px; " src="{{ url_for('static', filename='imagens/' + produto.imagem) }}" alt="{{ produto.nome }}">
+        <img style="width:200px; " src="{{ produto.imagem }}" alt="{{ produto.nome }}">
     </div>
     <div style="margin-left: 200px;" class="produto-info">
         <h2>{{ produto.nome }}</h2>

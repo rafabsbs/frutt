@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 from datetime import datetime
+import requests
 import os
 
 # Configurações Twilio (obtenha em twilio.com)
@@ -399,21 +400,21 @@ def editar_produto(id):
                 
             produto.descricao = request.form['descricao']
             
-            # Processamento da imagem (se uma nova foi enviada)
-            if 'imagem' in request.files:
-                imagem = request.files['imagem']
-                if imagem and allowed_file(imagem.filename):
-                    # Remove a imagem antiga se não for a default
-                    if produto.imagem != 'default.jpg':
-                        try:
-                            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], produto.imagem))
-                        except:
-                            pass
-                    
-                    # Salva a nova imagem
-                    filename = secure_filename(imagem.filename)
-                    imagem.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    produto.imagem = filename
+            # Processamento da URL da imagem (novo campo)
+            nova_url = request.form.get('imagem_url')
+            if nova_url and nova_url != produto.imagem:
+                if not (nova_url.startswith('http://') or nova_url.startswith('https://')):
+                    raise ValueError("A URL da imagem deve começar com http:// ou https://")
+                
+                # Verificação opcional da URL (pode ser comentada se não for necessária)
+                try:
+                    response = requests.head(nova_url, timeout=5)
+                    if response.status_code != 200:
+                        raise ValueError("A URL da imagem não é acessível")
+                except requests.RequestException:
+                    raise ValueError("Não foi possível verificar a URL da imagem")
+                
+                produto.imagem = nova_url
             
             db.session.commit()
             
@@ -423,8 +424,9 @@ def editar_produto(id):
         except ValueError as e:
             flash(str(e), 'error')
         except Exception as e:
-            flash('Ocorreu um erro ao editar o produto', 'error')
-            print(f"Erro: {str(e)}")
+            db.session.rollback()
+            flash(f'Ocorreu um erro ao editar o produto: {str(e)}', 'error')
+            app.logger.error(f"Erro ao editar produto {id}: {str(e)}")
     
     return render_template('editar_produto.html', produto=produto)
 
