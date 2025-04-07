@@ -22,8 +22,6 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-TWILIO_ACCOUNT = os.getenv('TWILIO_ACCOUNT')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 
 # Rotas administrativas (para adicionar produtos)
 UPLOAD_FOLDER = 'static/imagens'
@@ -41,6 +39,10 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
         total: Valor total da compra
         pedido_id: ID do pedido
     """
+    TWILIO_ACCOUNT = os.getenv('TWILIO_ACCOUNT')
+    TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+
+
     client = Client(TWILIO_ACCOUNT, TWILIO_AUTH_TOKEN )
     
     # Formatar itens
@@ -69,8 +71,8 @@ def enviar_whatsapp_admin(usuario, itens, total, pedido_id):
     try:
         message = client.messages.create(
             body=mensagem,
-            from_= os.getenv('TWILIO_WHATSAPP_NUMBER'),
-            to= os.getenv('ADMIN_WHATSAPP')
+            from_= ('TWILIO_WHATSAPP_NUMBER'),
+            to= ('ADMIN_WHATSAPP')
         )
         print(f"✅ Notificação enviada! SID: {message.sid}")
         return True
